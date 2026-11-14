@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bolão do Chá Revelação</title>
+<meta property="og:title" content="Bolão do Chá Revelação 💙💗">
+<meta property="og:description" content="Menino ou menina? Dê seu palpite e concorra ao prêmio!">
+<style>
+  :root{--azul:#4aa3ff;--rosa:#ff6fa8;--txt:#2b2b3a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--txt);
+    background:linear-gradient(135deg,#dff0ff 0%,#fff 50%,#ffe3ef 100%);min-height:100vh;padding:20px}
+  .card{max-width:480px;margin:0 auto;background:#fff;border-radius:24px;padding:28px 22px;
+    box-shadow:0 10px 40px rgba(0,0,0,.08)}
+  h1{text-align:center;font-size:1.9rem;line-height:1.2}
+  .sub{text-align:center;margin:10px 0 22px;color:#666}
+  .premio{background:#fff8e1;border:2px dashed #f5c242;border-radius:16px;padding:14px;text-align:center;margin-bottom:22px}
+  .premio b{font-size:1.1rem}
+  label{display:block;font-weight:600;margin:14px 0 6px}
+  input[type=text]{width:100%;padding:14px;border:2px solid #e3e3ee;border-radius:12px;font-size:1rem}
+  input[type=text]:focus{outline:none;border-color:var(--azul)}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .opt{position:relative}
+  .opt input{position:absolute;opacity:0}
+  .opt span{display:block;text-align:center;padding:18px 8px;border-radius:16px;border:3px solid #e3e3ee;
+    font-weight:700;font-size:1.1rem;cursor:pointer;transition:.15s}
+  .opt span em{display:block;font-style:normal;font-size:2rem}
+  .opt.m input:checked+span{border-color:var(--azul);background:#e6f2ff}
+  .opt.f input:checked+span{border-color:var(--rosa);background:#ffe9f2}
+  button{width:100%;margin-top:22px;padding:16px;border:0;border-radius:14px;background:#25d366;color:#fff;
+    font-size:1.05rem;font-weight:700;cursor:pointer}
+  button.sec{background:#2b2b3a;margin-top:10px;font-size:.95rem;padding:12px}
+  .pix{margin-top:22px;background:#f4f4fa;border-radius:16px;padding:16px;text-align:center}
+  .pix code{display:block;word-break:break-all;margin:8px 0;font-size:1rem;font-weight:700}
+  .regras{margin-top:22px;font-size:.92rem;color:#555}
+  .regras li{margin:6px 0 6px 18px}
+  .erro{color:#d33;font-size:.9rem;margin-top:8px;display:none}
+  footer{text-align:center;margin-top:18px;font-size:.8rem;color:#999}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Menino ou Menina? 💙💗</h1>
+  <p class="sub" id="evento">Bolão do Chá Revelação</p>
+
+  <div class="premio">
+    🏆 <b>Quem acertar divide o prêmio!</b><br>
+    Palpite: <b id="valor"></b>
+  </div>
+
+  <label for="nome">Seu nome</label>
+  <input type="text" id="nome" placeholder="Ex.: Maria Silva" autocomplete="name">
+
+  <label>Seu palpite</label>
+  <div class="opts">
+    <label class="opt m"><input type="radio" name="p" value="MENINO"><span><em>💙</em>Menino</span></label>
+    <label class="opt f"><input type="radio" name="p" value="MENINA"><span><em>💗</em>Menina</span></label>
+  </div>
+  <p class="erro" id="erro">Preencha seu nome e escolha um palpite.</p>
+
+  <div class="pix">
+    <div>1️⃣ Faça o Pix:</div>
+    <code id="chave"></code>
+    <button class="sec" type="button" onclick="copiar()">Copiar chave Pix</button>
+  </div>
+
+  <button type="button" onclick="enviar()">2️⃣ Enviar palpite no WhatsApp</button>
+
+  <ul class="regras">
+    <li>Mande o comprovante junto com o palpite.</li>
+    <li>Palpites até a hora da revelação.</li>
+    <li>Quem acertar divide o total arrecadado em partes iguais.</li>
+    <li>Se todos errarem ou todos acertarem, o valor é devolvido.</li>
+  </ul>
+</div>
+<footer>Feito com 💛</footer>
+
+<script>
+  // ====== EDITE AQUI ======
+  const CONFIG = {
+    evento: "Chá Revelação da Rayane e do Jean",
+    valor: "R$ 10,00",
+    pixChave: "21968048591",
+    whatsapp: "5521968048591" // DDI+DDD+número, só números
+  };
+  // ========================
+
+  document.getElementById('evento').textContent = CONFIG.evento;
+  document.getElementById('valor').textContent = CONFIG.valor;
+  document.getElementById('chave').textContent = CONFIG.pixChave;
+
+  function copiar(){
+    navigator.clipboard.writeText(CONFIG.pixChave).then(()=>alert('Chave Pix copiada!'))
+      .catch(()=>prompt('Copie a chave:',CONFIG.pixChave));
+  }
+  function enviar(){
+    const nome = document.getElementById('nome').value.trim();
+    const p = document.querySelector('input[name=p]:checked');
+    const erro = document.getElementById('erro');
+    if(!nome || !p){erro.style.display='block';return;}
+    erro.style.display='none';
+    const emoji = p.value==='MENINO' ? '💙' : '💗';
+    const msg = `Bolão do chá revelação!\nNome: ${nome}\nPalpite: ${p.value} ${emoji}\nJá fiz o Pix (comprovante em anexo).`;
+    window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`,'_blank');
+  }
+</script>
+</body>
+</html>
